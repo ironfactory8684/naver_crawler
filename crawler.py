@@ -93,7 +93,7 @@ def crawler(query, s_date, e_date, news_office, maxpage, sort, printed):
     s_from = s_date.replace(".","")
     e_to = e_date.replace(".","")
     
-    if maxpage==400:
+    if maxpage=="400":
         url = "https://search.naver.com/search.naver?where=news&query=" + \
             query + "&sort="+sort+"&ds=" + s_date + "&de=" + e_date + \
             "&nso=so%3Ar%2Cp%3Afrom" + s_from + "to" + e_to + "%2Ca%3A&start=" + str(maxpage_t)
