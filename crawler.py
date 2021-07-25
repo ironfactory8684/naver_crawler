@@ -183,3 +183,6 @@ def main():
 2041: 천지일보, 1028: 한겨레, 1469: 한국일보 """) 
     printed = input("진행되는 결과물 출력(출력=1 비출력=0): ")
     crawler(query, s_date, e_date, news_office, maxpage, sort,printed)
+
+if __name__ == '__main__':
+    main()
