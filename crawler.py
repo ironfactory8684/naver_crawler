@@ -4,9 +4,9 @@ from bs4 import BeautifulSoup
 import re
 import csv
 
-def get_news(n_url): 
+def get_news(article): 
     news_detail = [] 
-    #print(n_url) 
+    #print(article) 
     headers = {'User-Agent':'Chrome/66.0.3359.181'}
     req = urllib.request.Request(article, headers=headers)
     source_code_from_URL = urllib.request.urlopen(req)
