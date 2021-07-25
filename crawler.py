@@ -105,7 +105,7 @@ def crawler(query, s_date, e_date, news_office, maxpage, sort, printed):
     check = soup.select_one("#main_pack > div.api_noresult_wrap > div.not_found02")
     if not check:
         print("검색결과가 4000개를 넘습니다. 기간을 짧게 설정하세요")
-        break
+        main()
               
     
     while page <maxpage_t:    
