@@ -93,19 +93,20 @@ def crawler(query, s_date, e_date, news_office, maxpage, sort, printed):
     s_from = s_date.replace(".","")
     e_to = e_date.replace(".","")
     
-    url = "https://search.naver.com/search.naver?where=news&query=" + \
+    if maxpage==400:
+        url = "https://search.naver.com/search.naver?where=news&query=" + \
             query + "&sort="+sort+"&ds=" + s_date + "&de=" + e_date + \
             "&nso=so%3Ar%2Cp%3Afrom" + s_from + "to" + e_to + "%2Ca%3A&start=" + str(maxpage_t)
-    header = {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36',
-        }
-    req = requests.get(url,headers=header)
-    cont = req.content
-    soup = BeautifulSoup(cont, 'html.parser')
-    check = soup.select_one("#main_pack > div.api_noresult_wrap > div.not_found02")
-    if not check:
-        print("검색결과가 4000개를 넘습니다. 기간을 짧게 설정하세요")
-        main()
+        header = {
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36',
+            }
+        req = requests.get(url,headers=header)
+        cont = req.content
+        soup = BeautifulSoup(cont, 'html.parser')
+        check = soup.select_one("#main_pack > div.api_noresult_wrap > div.not_found02")
+        if not check:
+            print("검색결과가 4000개를 넘습니다. 기간을 짧게 설정하세요")
+            main()
               
     
     while page <maxpage_t:    
