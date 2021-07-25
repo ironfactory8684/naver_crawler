@@ -1,3 +1,9 @@
+import urllib.request
+import requests
+from bs4 import BeautifulSoup
+import re
+import csv
+
 def get_news(n_url): 
     news_detail = [] 
     #print(n_url) 
