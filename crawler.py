@@ -95,7 +95,7 @@ def crawler(query, s_date, e_date, news_office, maxpage, sort, printed):
     
     url = "https://search.naver.com/search.naver?where=news&query=" + \
             query + "&sort="+sort+"&ds=" + s_date + "&de=" + e_date + \
-            "&nso=so%3Ar%2Cp%3Afrom" + s_from + "to" + e_to + "%2Ca%3A&start=" + maxpage_t
+            "&nso=so%3Ar%2Cp%3Afrom" + s_from + "to" + e_to + "%2Ca%3A&start=" + str(maxpage_t)
     header = {
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36',
         }
