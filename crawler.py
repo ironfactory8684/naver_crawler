@@ -93,6 +93,21 @@ def crawler(query, s_date, e_date, news_office, maxpage, sort, printed):
     s_from = s_date.replace(".","")
     e_to = e_date.replace(".","")
     
+    url = "https://search.naver.com/search.naver?where=news&query=" + \
+            query + "&sort="+sort+"&ds=" + s_date + "&de=" + e_date + \
+            "&nso=so%3Ar%2Cp%3Afrom" + s_from + "to" + e_to + "%2Ca%3A&start=" + maxpage_t
+    header = {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36',
+        }
+    req = requests.get(url,headers=header)
+    cont = req.content
+    soup = BeautifulSoup(cont, 'html.parser')
+    check = soup.select_one("#main_pack > div.api_noresult_wrap > div.not_found02")
+    if not check:
+        print("검색결과가 4000개를 넘습니다. 기간을 짧게 설정하세요)
+        break
+              
+    
     while page <maxpage_t:    
         #print(page)
         if news_office:
@@ -153,7 +168,7 @@ def crawler(query, s_date, e_date, news_office, maxpage, sort, printed):
     
 def main():
     info_main = input("="*50+"\n"+"입력 형식에 맞게 입력해주세요."+"\n"+" 시작하시려면 Enter를 눌러주세요."+"\n"+"="*50)
-    maxpage = input("최대 크롤링할 페이지 수 입력하시오: ")
+    maxpage = input("최대 크롤링할 페이지 수 입력하시오:"+"\n"+"최대 400페이지까지 가능합니다")
     query = input("검색어 입력: ")
     sort = input("뉴스 검색 방식 입력(관련도순=0 최신순=1 오래된순=2): ") #관련도순=0 최신순=1 오래된순=2
     s_date = input("시작날짜 입력(2019.01.04):") #2019.01.04
