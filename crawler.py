@@ -86,20 +86,25 @@ def flatten(l): # 여러 리스트들을 하나로 묶어 주는 함수입니다
         return flatList
 
 
-def crawler(query, s_date, e_date,f, news_office):
+def crawler(query, s_date, e_date, f, news_office, maxpage, sort, printed):
     page = 1
-    while page <5000:    
+    maxpage_t =(int(maxpage)-1)*10+1 # 11= 2페이지 21=3페이지 31=4페이지 ...81=9페이지 , 91=10페이지, 101=11페이지
+    s_from = s_date.replace(".","")
+    e_to = e_date.replace(".","")
+    
+    while page <maxpage_t:    
         #print(page)
         if news_office:
             url = "https://search.naver.com/search.naver?where=news&query=" + \
-            query +"&sm=tab_opt&sort=2&photo=0&field=0&reporter_article=&pd=3&ds=" + \
-            s_date+"&de="+e_date+ "&docid=&mynews=1&start="+str(page)+"&refresh_start=0&related=0"+\
-            "office_section_code=1&news_office_checked="+news_office
+            query + "&sort="+sort+"&ds=" + s_date + "&de=" + e_date + 
+            "&nso=so%3Ar%2Cp%3Afrom" + s_from + "to" + e_to + "%2Ca%3A&start=" + str(page)
+            "&office_section_code=1&news_office_checked="+news_office
         else:
             url = "https://search.naver.com/search.naver?where=news&query=" + \
-            query +"&sm=tab_opt&sort=2&photo=0&field=0&reporter_article=&pd=3&ds=" + \
-            s_date+"&de="+e_date+ "&docid=&mynews=1&start="+str(page)+"&refresh_start=0&related=0"
-        #print(url)
+            query + "&sort="+sort+"&ds=" + s_date + "&de=" + e_date + 
+            "&nso=so%3Ar%2Cp%3Afrom" + s_from + "to" + e_to + "%2Ca%3A&start=" + str(page)
+        if printed:
+            print(url)
         header = {
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36',
         }
@@ -114,8 +119,9 @@ def crawler(query, s_date, e_date,f, news_office):
                 #남은 것중 네이버 뉴스를 골라낸다
                 if article.startswith("https://news.naver.com"):
                     i+=1
-                    print("네이버 뉴스",page,"-", i,":")
-                    print(article)
+                    if printed:
+                        print("네이버 뉴스",page,"-", i,":")
+                        print(article)
                 
                     AD = article.split("aid=")[1]  # 기사의 고유 아이디값
                 
@@ -143,3 +149,20 @@ def crawler(query, s_date, e_date,f, news_office):
     
     f.close()
     print("크롤링이 종료되었습니다.")
+    
+    def main():
+        info_main = input("="*50+"\n"+"입력 형식에 맞게 입력해주세요."+"\n"+" 시작하시려면 Enter를 눌러주세요."+"\n"+"="*50)
+        maxpage = input("최대 크롤링할 페이지 수 입력하시오: ")
+        query = input("검색어 입력: ")
+        sort = input("뉴스 검색 방식 입력(관련도순=0 최신순=1 오래된순=2): ") #관련도순=0 최신순=1 오래된순=2
+        s_date = input("시작날짜 입력(2019.01.04):") #2019.01.04
+        e_date = input("끝날짜 입력(2019.01.05):") #2019.01.05
+        news_office = input("""특정 신문사를 원할경우 숫자를 입력해주세요\n 
+만약 원하지 않는다면 Enter를 눌러주세요\n
+1032: 경향신문, 1005: 국민일보, 2312: 내일신문\n
+1020: 동아일보, 2385:매일일보, 1021: 문화일보\n
+1081: 서울신문, 1022: 세계일보, 2268: 아시아투데이
+2844: 전국매일신문, 1023: 조선일보, 1025: 중앙일보 \n
+2041: 천지일보, 1028: 한겨레, 1469: 한국일보 """) 
+        printed = input("진행되는 결과물 출력(출력=1 비출력=0): ")
+        crawler(query, s_date, e_date, f, news_office, maxpage, sort,printed)
