@@ -86,7 +86,8 @@ def flatten(l): # 여러 리스트들을 하나로 묶어 주는 함수입니다
         return flatList
 
 
-def crawler(query, s_date, e_date, f, news_office, maxpage, sort, printed):
+def crawler(query, s_date, e_date, news_office, maxpage, sort, printed):
+    f = open("./" + query + '.csv', 'a', encoding='utf-8', newline='')
     page = 1
     maxpage_t =(int(maxpage)-1)*10+1 # 11= 2페이지 21=3페이지 31=4페이지 ...81=9페이지 , 91=10페이지, 101=11페이지
     s_from = s_date.replace(".","")
@@ -150,7 +151,7 @@ def crawler(query, s_date, e_date, f, news_office, maxpage, sort, printed):
     f.close()
     print("크롤링이 종료되었습니다.")
     
-def main(f):
+def main():
     info_main = input("="*50+"\n"+"입력 형식에 맞게 입력해주세요."+"\n"+" 시작하시려면 Enter를 눌러주세요."+"\n"+"="*50)
     maxpage = input("최대 크롤링할 페이지 수 입력하시오: ")
     query = input("검색어 입력: ")
@@ -165,4 +166,4 @@ def main(f):
 2844: 전국매일신문, 1023: 조선일보, 1025: 중앙일보 \n
 2041: 천지일보, 1028: 한겨레, 1469: 한국일보 """) 
     printed = input("진행되는 결과물 출력(출력=1 비출력=0): ")
-    crawler(query, s_date, e_date, f, news_office, maxpage, sort,printed)
+    crawler(query, s_date, e_date, news_office, maxpage, sort,printed)
