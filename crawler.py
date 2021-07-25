@@ -150,19 +150,19 @@ def crawler(query, s_date, e_date, f, news_office, maxpage, sort, printed):
     f.close()
     print("크롤링이 종료되었습니다.")
     
-    def main():
-        info_main = input("="*50+"\n"+"입력 형식에 맞게 입력해주세요."+"\n"+" 시작하시려면 Enter를 눌러주세요."+"\n"+"="*50)
-        maxpage = input("최대 크롤링할 페이지 수 입력하시오: ")
-        query = input("검색어 입력: ")
-        sort = input("뉴스 검색 방식 입력(관련도순=0 최신순=1 오래된순=2): ") #관련도순=0 최신순=1 오래된순=2
-        s_date = input("시작날짜 입력(2019.01.04):") #2019.01.04
-        e_date = input("끝날짜 입력(2019.01.05):") #2019.01.05
-        news_office = input("""특정 신문사를 원할경우 숫자를 입력해주세요\n 
+def main(f):
+    info_main = input("="*50+"\n"+"입력 형식에 맞게 입력해주세요."+"\n"+" 시작하시려면 Enter를 눌러주세요."+"\n"+"="*50)
+    maxpage = input("최대 크롤링할 페이지 수 입력하시오: ")
+    query = input("검색어 입력: ")
+    sort = input("뉴스 검색 방식 입력(관련도순=0 최신순=1 오래된순=2): ") #관련도순=0 최신순=1 오래된순=2
+    s_date = input("시작날짜 입력(2019.01.04):") #2019.01.04
+    e_date = input("끝날짜 입력(2019.01.05):") #2019.01.05
+    news_office = input("""특정 신문사를 원할경우 숫자를 입력해주세요\n 
 만약 원하지 않는다면 Enter를 눌러주세요\n
 1032: 경향신문, 1005: 국민일보, 2312: 내일신문\n
 1020: 동아일보, 2385:매일일보, 1021: 문화일보\n
 1081: 서울신문, 1022: 세계일보, 2268: 아시아투데이
 2844: 전국매일신문, 1023: 조선일보, 1025: 중앙일보 \n
 2041: 천지일보, 1028: 한겨레, 1469: 한국일보 """) 
-        printed = input("진행되는 결과물 출력(출력=1 비출력=0): ")
-        crawler(query, s_date, e_date, f, news_office, maxpage, sort,printed)
+    printed = input("진행되는 결과물 출력(출력=1 비출력=0): ")
+    crawler(query, s_date, e_date, f, news_office, maxpage, sort,printed)
