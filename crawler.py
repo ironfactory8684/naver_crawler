@@ -120,7 +120,7 @@ def crawler(query, s_date, e_date, news_office, maxpage, sort, printed):
             url = "https://search.naver.com/search.naver?where=news&query=" + \
             query + "&sort="+sort+"&ds=" + s_date + "&de=" + e_date + \
             "&nso=so%3Ar%2Cp%3Afrom" + s_from + "to" + e_to + "%2Ca%3A&start=" + str(page)
-        if printed:
+        if printed ==1:
             print(url)
         header = {
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36',
@@ -136,7 +136,7 @@ def crawler(query, s_date, e_date, news_office, maxpage, sort, printed):
                 #남은 것중 네이버 뉴스를 골라낸다
                 if article.startswith("https://news.naver.com"):
                     i+=1
-                    if printed:
+                    if printed==1:
                         print("네이버 뉴스",page,"-", i,":")
                         print(article)
                 
