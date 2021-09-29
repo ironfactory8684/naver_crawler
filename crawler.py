@@ -87,7 +87,19 @@ def flatten(l): # 여러 리스트들을 하나로 묶어 주는 함수입니다
 
 
 def crawler(query, s_date, e_date, news_office, maxpage, sort, printed):
-    f = open("./" + query + '.csv', 'a', encoding='utf-8', newline='')
+    news_compnay = {"1032": "경향신문", "1005": "국민일보", "2312": "내일신문",
+                    "1020": "동아일보", "2385":"매일일보", "1021": "문화일보",
+                    "1081": "서울신문", "1022": "세계일보", "2268": "아시아투데이",
+                    "2844": "전국매일신문", "1023": "조선일보", "1025": "중앙일보",
+                    "2041": "천지일보", "1028": "한겨레", "1469": "한국일보"}
+    if news_office:
+        news_office = news_compnay[news_office]
+       
+    
+    f = open("./" + query+news_office  + '.csv', 'a', encoding='utf-8', newline='')
+    wr=csv.writer(f)
+    wr.writerow(["기사_아이디","날짜","신문사","제목","내용","댓글갯수","댓글내용"])
+    
     page = 1
     maxpage_t =(int(maxpage)-1)*10+1 # 11= 2페이지 21=3페이지 31=4페이지 ...81=9페이지 , 91=10페이지, 101=11페이지
     s_from = s_date.replace(".","")
@@ -109,7 +121,7 @@ def crawler(query, s_date, e_date, news_office, maxpage, sort, printed):
             main()
               
     
-    while page <maxpage_t:    
+    while page =<maxpage_t:    
         #print(page)
         if news_office:
             url = "https://search.naver.com/search.naver?where=news&query=" + \
@@ -120,7 +132,7 @@ def crawler(query, s_date, e_date, news_office, maxpage, sort, printed):
             url = "https://search.naver.com/search.naver?where=news&query=" + \
             query + "&sort="+sort+"&ds=" + s_date + "&de=" + e_date + \
             "&nso=so%3Ar%2Cp%3Afrom" + s_from + "to" + e_to + "%2Ca%3A&start=" + str(page)
-        if printed ==1:
+        if printed =="1":
             print(url)
         header = {
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36',
@@ -136,7 +148,7 @@ def crawler(query, s_date, e_date, news_office, maxpage, sort, printed):
                 #남은 것중 네이버 뉴스를 골라낸다
                 if article.startswith("https://news.naver.com"):
                     i+=1
-                    if printed==1:
+                    if printed=="1":
                         print("네이버 뉴스",page,"-", i,":")
                         print(article)
                 
@@ -149,7 +161,6 @@ def crawler(query, s_date, e_date, news_office, maxpage, sort, printed):
 
                     CA= [AD]+news_detail+CA   #가독성을 위해..
             
-                    wr=csv.writer(f)
                     wr.writerow(CA)
             
                 #네이버 뉴스 링크가 없는 것
