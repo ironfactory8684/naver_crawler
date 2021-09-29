@@ -121,7 +121,7 @@ def crawler(query, s_date, e_date, news_office, maxpage, sort, printed):
             main()
               
     
-    while page =<maxpage_t:    
+    while page <=maxpage_t:    
         #print(page)
         if news_office:
             url = "https://search.naver.com/search.naver?where=news&query=" + \
