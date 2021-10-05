@@ -96,7 +96,7 @@ def flatten(l): # 여러 리스트들을 하나로 묶어 주는 함수입니다
 def crawler(query, s_date, e_date, news_office, maxpage, sort, printed):
        
     
-    f = open("./" + query+news_office  + '.csv', 'a', encoding='utf-8', newline='')
+    f = open("./" + query.replace(" ","_")+news_office  + '.csv', 'a', encoding='utf-8', newline='')
     wr=csv.writer(f)
     wr.writerow(["기사_아이디","날짜","신문사","제목","내용","댓글갯수","댓글내용"])
     
