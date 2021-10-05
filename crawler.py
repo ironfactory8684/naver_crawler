@@ -3,6 +3,7 @@ import requests
 from bs4 import BeautifulSoup
 import re
 import csv
+from datetime import date, timedelta,datetime
 
 def get_news(article): 
     news_detail = [] 
@@ -87,13 +88,13 @@ def flatten(l): # 여러 리스트들을 하나로 묶어 주는 함수입니다
 
 
 def crawler(query, s_date, e_date, news_office, maxpage, sort, printed):
-    news_compnay = {"1032": "경향신문", "1005": "국민일보", "2312": "내일신문",
-                    "1020": "동아일보", "2385":"매일일보", "1021": "문화일보",
-                    "1081": "서울신문", "1022": "세계일보", "2268": "아시아투데이",
-                    "2844": "전국매일신문", "1023": "조선일보", "1025": "중앙일보",
-                    "2041": "천지일보", "1028": "한겨레", "1469": "한국일보"}
-    if news_office:
-        news_office = news_compnay[news_office]
+#     news_compnay = {"1032": "경향신문", "1005": "국민일보", "2312": "내일신문",
+#                     "1020": "동아일보", "2385":"매일일보", "1021": "문화일보",
+#                     "1081": "서울신문", "1022": "세계일보", "2268": "아시아투데이",
+#                     "2844": "전국매일신문", "1023": "조선일보", "1025": "중앙일보",
+#                     "2041": "천지일보", "1028": "한겨레", "1469": "한국일보"}
+#     if news_office:
+#         news_office = news_compnay[news_office]
        
     
     f = open("./" + query+news_office  + '.csv', 'a', encoding='utf-8', newline='')
@@ -105,20 +106,20 @@ def crawler(query, s_date, e_date, news_office, maxpage, sort, printed):
     s_from = s_date.replace(".","")
     e_to = e_date.replace(".","")
     
-    if maxpage=="400":
-        url = "https://search.naver.com/search.naver?where=news&query=" + \
-            query + "&sort="+sort+"&ds=" + s_date + "&de=" + e_date + \
-            "&nso=so%3Ar%2Cp%3Afrom" + s_from + "to" + e_to + "%2Ca%3A&start=" + str(maxpage_t)
-        header = {
-            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36',
-            }
-        req = requests.get(url,headers=header)
-        cont = req.content
-        soup = BeautifulSoup(cont, 'html.parser')
-        check = soup.select_one("#main_pack > div.api_noresult_wrap > div.not_found02")
-        if not check:
-            print("검색결과가 4000개를 넘습니다. 기간을 짧게 설정하세요")
-            main()
+#     if maxpage=="400":
+#         url = "https://search.naver.com/search.naver?where=news&query=" + \
+#             query + "&sort="+sort+"&ds=" + s_date + "&de=" + e_date + \
+#             "&nso=so%3Ar%2Cp%3Afrom" + s_from + "to" + e_to + "%2Ca%3A&start=" + str(maxpage_t)
+#         header = {
+#             'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36',
+#             }
+#         req = requests.get(url,headers=header)
+#         cont = req.content
+#         soup = BeautifulSoup(cont, 'html.parser')
+#         check = soup.select_one("#main_pack > div.api_noresult_wrap > div.not_found02")
+#         if not check:
+#             print("검색결과가 4000개를 넘습니다. 기간을 짧게 설정하세요")
+#             main()
               
     
     while page <=maxpage_t:    
@@ -177,6 +178,23 @@ def crawler(query, s_date, e_date, news_office, maxpage, sort, printed):
     
     f.close()
     print("크롤링이 종료되었습니다.")
+
+def main_crawler(query,s_date, e_date, news_office, maxpage, sort, printed):
+    print(s_date, e_date)
+    y,m,d = s_date.split(".")
+    ey,em,ed = e_date.split(".")
+    first_date = "%s.%s.%s"%(y,m,d)
+    today = datetime(int(y),int(m),int(d))
+    endday = datetime(int(ey),int(em),int(ed))
+
+    while today <endday:
+        print(first_date)
+        crawler(query, first_date, first_date, news_office, maxpage, sort, printed)
+        y,m,d = first_date.split(".")
+        today = datetime(int(y),int(m),int(d))
+        next_day = today + timedelta(days=1)
+        ny, nm, nd = next_day.year,next_day.month,next_day.day
+        first_date = "%s.%02d.%02d"%(ny,int(nm),int(nd))    
     
 def main():
     info_main = input("="*50+"\n"+"입력 형식에 맞게 입력해주세요."+"\n"+" 시작하시려면 Enter를 눌러주세요."+"\n"+"="*50)
@@ -194,7 +212,7 @@ def main():
 2041: 천지일보, 1028: 한겨레, 1469: 한국일보 \n
 신문사 숫자를 입력해주세요 원하시지 않으면 enter를 입력해주세요:""") 
     printed = input("진행되는 결과물 출력(출력=1 비출력=0): ")
-    crawler(query, s_date, e_date, news_office, maxpage, sort,printed)
+    main_crawler(query, s_date, e_date, news_office, maxpage, sort,printed)
 
 if __name__ == '__main__':
     main()
