@@ -5,6 +5,12 @@ import re
 import csv
 from datetime import date, timedelta,datetime
 
+# news_key = {"경향신문":"1032",  "국민일보":"1005",  "내일신문":"2312",
+#                 "동아일보":"1020", "매일일보":"2385",  "문화일보":"1021",
+#                 "서울신문":"1081", "세계일보":"1022", "아시아투데이": "2268",
+#                 "전국매일신문":"2844",  "조선일보":"1023", "중앙일보":"1025",
+#                 "천지일보":"2041", "한겨레":"1028", "한국일보":"1469"}
+
 def get_news(article): 
     news_detail = [] 
     #print(article) 
@@ -88,13 +94,6 @@ def flatten(l): # 여러 리스트들을 하나로 묶어 주는 함수입니다
 
 
 def crawler(query, s_date, e_date, news_office, maxpage, sort, printed):
-#     news_compnay = {"1032": "경향신문", "1005": "국민일보", "2312": "내일신문",
-#                     "1020": "동아일보", "2385":"매일일보", "1021": "문화일보",
-#                     "1081": "서울신문", "1022": "세계일보", "2268": "아시아투데이",
-#                     "2844": "전국매일신문", "1023": "조선일보", "1025": "중앙일보",
-#                     "2041": "천지일보", "1028": "한겨레", "1469": "한국일보"}
-#     if news_office:
-#         news_office = news_compnay[news_office]
        
     
     f = open("./" + query+news_office  + '.csv', 'a', encoding='utf-8', newline='')
@@ -189,7 +188,12 @@ def main_crawler(query,s_date, e_date, news_office, maxpage, sort, printed):
 
     while today <endday:
         print(first_date)
-        crawler(query, first_date, first_date, news_office, maxpage, sort, printed)
+        if news_office:
+            news_company = news_office.split(",")
+            for office in news_company:
+                crawler(query, first_date, first_date, office.strip(), maxpage, sort, printed)
+        else:                 
+            crawler(query, first_date, first_date, news_office, maxpage, sort, printed)
         y,m,d = first_date.split(".")
         today = datetime(int(y),int(m),int(d))
         next_day = today + timedelta(days=1)
@@ -203,7 +207,8 @@ def main():
     sort = input("뉴스 검색 방식 입력(관련도순=0 최신순=1 오래된순=2): ") #관련도순=0 최신순=1 오래된순=2
     s_date = input("시작날짜 입력(2019.01.04):") #2019.01.04
     e_date = input("끝날짜 입력(2019.01.05):") #2019.01.05
-    news_office = input("""특정 신문사를 원할경우 숫자를 입력해주세요\n 
+    news_office = input("""특정 신문사를 원할경우 신문사의 번호를 입력해주세요\n
+ 여러 신문사를 원한다면 쉼표로 구분해서 입력해주세요(예시: 1032,1028,1023)
 만약 원하지 않는다면 Enter를 눌러주세요\n
 1032: 경향신문, 1005: 국민일보, 2312: 내일신문\n
 1020: 동아일보, 2385:매일일보, 1021: 문화일보\n
