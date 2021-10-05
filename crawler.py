@@ -92,34 +92,12 @@ def flatten(l): # 여러 리스트들을 하나로 묶어 주는 함수입니다
                 flatList.append(elem) 
         return flatList
 
+def crawler(query, s_date, e_date, news_office, maxpage, sort, printed, wr):
 
-def crawler(query, s_date, e_date, news_office, maxpage, sort, printed):
-       
-    
-    f = open("./" + query.replace(" ","_")+news_office  + '.csv', 'a', encoding='utf-8', newline='')
-    wr=csv.writer(f)
-    wr.writerow(["기사_아이디","날짜","신문사","제목","내용","댓글갯수","댓글내용"])
-    
     page = 1
     maxpage_t =(int(maxpage)-1)*10+1 # 11= 2페이지 21=3페이지 31=4페이지 ...81=9페이지 , 91=10페이지, 101=11페이지
     s_from = s_date.replace(".","")
     e_to = e_date.replace(".","")
-    
-#     if maxpage=="400":
-#         url = "https://search.naver.com/search.naver?where=news&query=" + \
-#             query + "&sort="+sort+"&ds=" + s_date + "&de=" + e_date + \
-#             "&nso=so%3Ar%2Cp%3Afrom" + s_from + "to" + e_to + "%2Ca%3A&start=" + str(maxpage_t)
-#         header = {
-#             'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36',
-#             }
-#         req = requests.get(url,headers=header)
-#         cont = req.content
-#         soup = BeautifulSoup(cont, 'html.parser')
-#         check = soup.select_one("#main_pack > div.api_noresult_wrap > div.not_found02")
-#         if not check:
-#             print("검색결과가 4000개를 넘습니다. 기간을 짧게 설정하세요")
-#             main()
-              
     
     while page <=maxpage_t:    
         #print(page)
@@ -141,6 +119,8 @@ def crawler(query, s_date, e_date, news_office, maxpage, sort, printed):
         cont = req.content
         soup = BeautifulSoup(cont, 'html.parser')
         i=0 #한 페이지당 네이버 뉴스의 개수
+        if  soup.select('#main_pack > div.api_noresult_wrap > div.not_found02'):
+            break
         for urls in soup.select("a.info"):
             try :
                 article=urls['href']
@@ -174,8 +154,7 @@ def crawler(query, s_date, e_date, news_office, maxpage, sort, printed):
                         
         page += 10
         i=0
-    
-    f.close()
+
     print("크롤링이 종료되었습니다.")
 
 def main_crawler(query,s_date, e_date, news_office, maxpage, sort, printed):
@@ -185,20 +164,25 @@ def main_crawler(query,s_date, e_date, news_office, maxpage, sort, printed):
     first_date = "%s.%s.%s"%(y,m,d)
     today = datetime(int(y),int(m),int(d))
     endday = datetime(int(ey),int(em),int(ed))
+    file_path = "./" + query.replace(" ","_")  + '.csv'
+    f = open(file_path, 'a', encoding='utf-8', newline='')
+    wr=csv.writer(f)
+    wr.writerow(["기사_아이디","날짜","신문사","제목","내용","댓글갯수","댓글내용"])
 
     while today <endday:
         print(first_date)
         if news_office:
             news_company = news_office.split(",")
             for office in news_company:
-                crawler(query, first_date, first_date, office.strip(), maxpage, sort, printed)
+                crawler(query, first_date, first_date, office.strip(), maxpage, sort, printed, wr)
         else:                 
-            crawler(query, first_date, first_date, news_office, maxpage, sort, printed)
+            crawler(query, first_date, first_date, news_office, maxpage, sort, printed, wr)
         y,m,d = first_date.split(".")
         today = datetime(int(y),int(m),int(d))
         next_day = today + timedelta(days=1)
         ny, nm, nd = next_day.year,next_day.month,next_day.day
         first_date = "%s.%02d.%02d"%(ny,int(nm),int(nd))    
+    f.close()
     
 def main():
     info_main = input("="*50+"\n"+"입력 형식에 맞게 입력해주세요."+"\n"+" 시작하시려면 Enter를 눌러주세요."+"\n"+"="*50)
