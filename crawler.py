@@ -134,7 +134,10 @@ def crawler(query, s_date, e_date, news_office, maxpage, sort, printed, wr):
 
         for news_number, urls in enumerate(news_tit):
             try :
+           
                 article=urls['href']
+                if printed =="1":
+                    print(article)                   
                 pcompany = soup.select("a.info.press")[news_number].text
                 
                 #남은 것중 네이버 뉴스를 골라낸다
