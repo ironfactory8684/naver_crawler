@@ -146,17 +146,23 @@ def crawler(query, s_date, e_date, news_office, maxpage, sort, printed, wr):
         header = {
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36',
         }
+
         req = requests.get(url,headers=header)
+        
         cont = req.content
+        
         soup = BeautifulSoup(cont, 'html.parser')
-        i=0 #한 페이지당 네이버 뉴스의 개수
+        news_tit =soup.select("a.news_tit")
+
         if  soup.select('#main_pack > div.api_noresult_wrap > div.not_found02'):
             break
-        for news_number, urls in enumerate(soup.select("a.news_tit")):
+        i=0 #한 페이지당 네이버 뉴스의 개수
+
+        for news_number, urls in enumerate(news_tit):
             try :
                 article=urls['href']
                 pcompany = soup.select("a.info.press")[news_number].text
-            
+                
                 #남은 것중 네이버 뉴스를 골라낸다
                 if article.startswith("https://news.naver.com"):
                     i+=1
@@ -175,9 +181,10 @@ def crawler(query, s_date, e_date, news_office, maxpage, sort, printed, wr):
             
                     
                 elif news_office == "2234":
-                    AD = article.split("aid=")[1]
+                    AD = article.split("id=")[1].split("&")[0]
                     news_detail = cpbc_news(article,pcompany) 
                     CA= [AD]+news_detail+["",""]
+                    
                 wr.writerow(CA)
 
                 #네이버 뉴스 링크가 없는 것
