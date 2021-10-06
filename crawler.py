@@ -147,21 +147,20 @@ def crawler(query, s_date, e_date, news_office, maxpage, sort, printed, wr):
                         print("네이버 뉴스",page,"-", i,":")
                         print(article)
                 
-                    AD = article.split("aid=")[1]  # 기사의 고유 아이디값
                 
                     news_detail = get_news(article,pcompany)  # 기사의 고유 아이디 값 컬럼 추가
                     # title, content
 
                     CA=comments(article)
 
-                    CA= [AD]+news_detail+CA   #가독성을 위해..
+                    CA= news_detail+CA+[article]   #가독성을 위해..
                     wr.writerow(CA)
             
                     
                 elif news_office in ["2234", "2545","2252","2458","2149"]:
                     pdate = soup.select("span.info")[news_number].text
                     news_detail = newscompany_crwal(article,pcompany,pdate,news_office) 
-                    CA= [article]+news_detail+["",""]
+                    CA=news_detail+["",""]+[article]
                     wr.writerow(CA)
                 
 
@@ -189,7 +188,7 @@ def main_crawler(query,s_date, e_date, news_office, maxpage, sort, printed):
     file_path = "./" + query.replace(" ","_")  + '.csv'
     f = open(file_path, 'a', encoding='utf-8', newline='')
     wr=csv.writer(f)
-    wr.writerow(["기사_아이디","날짜","기자","신문사","제목","내용","댓글갯수","댓글내용"])
+    wr.writerow(["날짜","기자","신문사","제목","내용","댓글갯수","댓글내용","기사_주소"])
 
     while today <endday:
         print(first_date)
