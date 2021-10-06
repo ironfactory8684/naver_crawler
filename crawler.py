@@ -11,7 +11,39 @@ from datetime import date, timedelta,datetime
 #                 "전국매일신문":"2844",  "조선일보":"1023", "중앙일보":"1025",
 #                 "천지일보":"2041", "한겨레":"1028", "한국일보":"1469"}
 
-def get_news(article): 
+def cpbc_news(article, pcompany): 
+    news_detail = [] 
+    #print(article) 
+    headers = {'User-Agent':'Chrome/66.0.3359.181'}
+    req = urllib.request.Request(article, headers=headers)
+    source_code_from_URL = urllib.request.urlopen(req)
+    bsoup = BeautifulSoup(source_code_from_URL, 'lxml', from_encoding='utf-8')
+
+    # 날짜 파싱
+    pdate = bsoup.select("'div.pdate'")[0].text.strip()[5:21]
+    news_detail.append(pdate) 
+    
+    # 신문사 크롤링
+    news_detail.append(pcompany) 
+
+    # html 파싱 
+    title = bsoup.select("#article_title")[0].text 
+    news_detail.append(title) 
+    
+    # 기사 본문 크롤링 
+    _text = bsoup.select("#articleBody")[0].text.strip().replace('\n', " ") 
+    btext = _text.replace("// flash 오류를 우회하기 위한 함수 추가 function _flash_removeCallback() {}", "") 
+    btext = btext.replace('\r', " ")
+    btext = btext.replace('\t', " ")
+    btext = re.sub('[a-zA-Z]', '', btext)
+    btext = re.sub('[\{\}\[\]\/?.,;:|\)*~`!^\-_+<>@\#$%&\\\=\(\'\"]','', btext)
+    btext = btext.replace('본문 내용    플레이어     플레이어     오류를 우회하기 위한 함수 추가', '')
+    btext = btext.replace('정보공유 라이선스 20영리금지', '')
+    news_detail.append(btext.strip()) 
+
+    return news_detail
+
+def get_news(article,pcompany): 
     news_detail = [] 
     #print(article) 
     headers = {'User-Agent':'Chrome/66.0.3359.181'}
@@ -24,7 +56,6 @@ def get_news(article):
     news_detail.append(pdate) 
     
     # 신문사 크롤링
-    pcompany = bsoup.select('#footer address')[0].a.text
     news_detail.append(pcompany) 
 
     # html 파싱 
@@ -32,7 +63,7 @@ def get_news(article):
     news_detail.append(title) 
     
     # 기사 본문 크롤링 
-    _text = bsoup.select('#articleBodyContents')[0].text.replace('\n', " ") 
+    _text = bsoup.select('#articleBodyContents')[0].text.strip().replace('\n', " ") 
     btext = _text.replace("// flash 오류를 우회하기 위한 함수 추가 function _flash_removeCallback() {}", "") 
     btext = btext.replace('\r', " ")
     btext = btext.replace('\t', " ")
@@ -121,9 +152,10 @@ def crawler(query, s_date, e_date, news_office, maxpage, sort, printed, wr):
         i=0 #한 페이지당 네이버 뉴스의 개수
         if  soup.select('#main_pack > div.api_noresult_wrap > div.not_found02'):
             break
-        for urls in soup.select("a.info"):
+        for news_number, urls in enumerate(soup.select("a.news_tit")):
             try :
                 article=urls['href']
+                pcompany = soup.select("a.info.press")[news_number].text
             
                 #남은 것중 네이버 뉴스를 골라낸다
                 if article.startswith("https://news.naver.com"):
@@ -134,15 +166,20 @@ def crawler(query, s_date, e_date, news_office, maxpage, sort, printed, wr):
                 
                     AD = article.split("aid=")[1]  # 기사의 고유 아이디값
                 
-                    news_detail = get_news(article)  # 기사의 고유 아이디 값 컬럼 추가
+                    news_detail = get_news(article,pcompany)  # 기사의 고유 아이디 값 컬럼 추가
                     # title, content
 
                     CA=comments(article)
 
                     CA= [AD]+news_detail+CA   #가독성을 위해..
             
-                    wr.writerow(CA)
-            
+                    
+                elif news_office == "2234":
+                    AD = article.split("aid=")[1]
+                    news_detail = cpbc_news(article,pcompany) 
+                    CA= [AD]+news_detail+["",""]
+                wr.writerow(CA)
+
                 #네이버 뉴스 링크가 없는 것
                 # else:
                 #     print("네이버 뉴스 X")
