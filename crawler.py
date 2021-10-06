@@ -155,14 +155,15 @@ def crawler(query, s_date, e_date, news_office, maxpage, sort, printed, wr):
                     CA=comments(article)
 
                     CA= [AD]+news_detail+CA   #가독성을 위해..
+                    wr.writerow(CA)
             
                     
                 elif news_office in ["2234", "2545","2252","2458","2149"]:
                     pdate = soup.select("span.info")[news_number].text
                     news_detail = newscompany_crwal(article,pcompany,pdate,news_office) 
                     CA= [article]+news_detail+["",""]
-                    
-                wr.writerow(CA)
+                    wr.writerow(CA)
+                
 
                 #네이버 뉴스 링크가 없는 것
                 # else:
