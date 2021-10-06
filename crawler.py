@@ -24,6 +24,11 @@ def get_news(article,pcompany):
     pdate = bsoup.select('.t11')[0].text[:11] 
     news_detail.append(pdate) 
     
+
+    # 기자 파싱
+    journalist = bsoup.select('div.journalistcard_summary_name')[0].text[:11] 
+    news_detail.append(journalist) 
+
     # 신문사 크롤링
     news_detail.append(pcompany) 
 
@@ -149,7 +154,7 @@ def crawler(query, s_date, e_date, news_office, maxpage, sort, printed, wr):
                     CA= [AD]+news_detail+CA   #가독성을 위해..
             
                     
-                elif news_office in ["2234", "2545"]:
+                elif news_office in ["2234", "2545","2252","2458","2149"]:
                     pdate = soup.select("span.info")[news_number].text
                     news_detail = newscompany_crwal(article,pcompany,pdate,news_office) 
                     CA= [article]+news_detail+["",""]
@@ -180,7 +185,7 @@ def main_crawler(query,s_date, e_date, news_office, maxpage, sort, printed):
     file_path = "./" + query.replace(" ","_")  + '.csv'
     f = open(file_path, 'a', encoding='utf-8', newline='')
     wr=csv.writer(f)
-    wr.writerow(["기사_아이디","날짜","신문사","제목","내용","댓글갯수","댓글내용"])
+    wr.writerow(["기사_아이디","날짜","기자","신문사","제목","내용","댓글갯수","댓글내용"])
 
     while today <endday:
         print(first_date)
