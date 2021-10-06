@@ -13,7 +13,44 @@ def newscompany_crwal(article, pcompany, pdate, news_office):
   elif news_office == "2252":
     return catholictimes(article, pcompany, pdate)  
   elif news_office == "2149":
-    return ibulgyo(article, pcompany, pdate)       
+    return ibulgyo(article, pcompany, pdate)     
+  elif news_office == "2047":
+    return christiantoday(article, pcompany, pdate)         
+
+def christiantoday(article, pcompany, pdate): 
+    news_detail = [] 
+    #print(article) 
+    headers = {'User-Agent':'Chrome/66.0.3359.181'}
+    req = urllib.request.Request(article, headers=headers)
+    source_code_from_URL = urllib.request.urlopen(req)
+    bsoup = BeautifulSoup(source_code_from_URL, 'lxml', from_encoding='utf-8')
+
+    # 날짜 파싱
+    news_detail.append(pdate) 
+
+    # 기자 파싱
+    journalist = bsoup.select("body > div.container-fluid > main > header > div > div.col-sm-8 > div > a:nth-of-type(1)")[0].text.strip()
+    news_detail.append(journalist) 
+
+    # 신문사 크롤링
+    news_detail.append(pcompany) 
+
+    # 제목 파싱 
+    title = bsoup.select("body > div.container-fluid > main > header > div > div.col-sm-8 > h1")[0].text
+    news_detail.append(title) 
+    
+    # 기사 본문 크롤링 
+    _text = bsoup.select("body > div.container-fluid > main > div > div.col-l.col-sm-7.col-md-8 > div > article > div.article-body.clearfix")[0].text.strip().replace('\n', "") 
+    btext = _text.replace("// flash 오류를 우회하기 위한 함수 추가 function _flash_removeCallback() {}", "") 
+    btext = btext.replace('\r', " ")
+    btext = btext.replace('\t', " ")
+    btext = re.sub('[a-zA-Z]', '', btext)
+    btext = re.sub('[\{\}\[\]\/?.,;:|\)*~`!^\-_+<>@\#$%&\\\=\(\'\"]','', btext)
+    btext = btext.replace('본문 내용    플레이어     플레이어     오류를 우회하기 위한 함수 추가', '')
+    btext = btext.replace('정보공유 라이선스 20영리금지', '')
+    news_detail.append(btext.strip()) 
+
+    return news_detail
 
 def ibulgyo(article, pcompany, pdate): 
     news_detail = [] 
