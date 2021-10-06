@@ -27,8 +27,8 @@ def ibulgyo(article, pcompany, pdate):
     news_detail.append(pdate) 
 
     # 기자 파싱
-    newser = bsoup.select("#user-container > div.float-center.max-width-960 > header > section > div > ul > li:nth-of-type(1)").text.strip()
-    news_detail.append(newser) 
+    journalist = bsoup.select("#user-container > div.float-center.max-width-960 > header > section > div > ul > li:nth-of-type(1)")[0].text.strip()
+    news_detail.append(journalist) 
 
     # 신문사 크롤링
     news_detail.append(pcompany) 
@@ -62,8 +62,8 @@ def catholictimes(article, pcompany, pdate):
     news_detail.append(pdate) 
 
     # 기자 파싱
-    newser = bsoup.select("p.auth").text.strip().split(" ")[0]
-    news_detail.append(newser) 
+    journalist = bsoup.select("p.auth")[0].text.strip().split(" ")[0]
+    news_detail.append(journalist) 
 
     
     # 신문사 크롤링
@@ -97,8 +97,8 @@ def catholicnews(article, pcompany, pdate):
     # 날짜 파싱
     news_detail.append(pdate) 
 
-    newser = bsoup.select("#article-view > div > header > div > article:nth-of-type(1) > ul > li:nth-of-type(1)").text.strip()
-    news_detail.append(newser)     
+    journalist = bsoup.select("#article-view > div > header > div > article:nth-of-type(1) > ul > li:nth-of-type(1)")[0].text.strip()
+    news_detail.append(journalist)     
     
     
     # 신문사 크롤링
@@ -133,8 +133,8 @@ def caps_news(article, pcompany, pdate):
     news_detail.append(pdate) 
 
     # 기자 파싱
-    newser = bsoup.select("#contents > div.basicView > div.registModifyDate > ul > li:nth-of-type(1) > span").text.strip().split(" ")[0]
-    news_detail.append(newser) 
+    journalist = bsoup.select("#contents > div.basicView > div.registModifyDate > ul > li:nth-of-type(1) > span")[0].text.strip().split(" ")[0]
+    news_detail.append(journalist) 
     
     # 신문사 크롤링
     news_detail.append(pcompany) 
@@ -167,8 +167,8 @@ def cpbc_news(article, pcompany, pdate):
     # 날짜 파싱
     news_detail.append(pdate) 
 
-    newser = bsoup.select("#container > div.article_content > div.article_writer > em:nth-of-type(1) > a:nth-of-type(1)").text.strip()
-    news_detail.append(newser)   
+    journalist =bsoup.select("#container > div.article_content > div.article_writer > em:nth-of-type(1) > a:nth-of-type(1)")[0].text.strip().split(" ")[0]
+    news_detail.append(journalist)   
 
     # 신문사 크롤링
     news_detail.append(pcompany) 
